@@ -1,8 +1,8 @@
 import os
 import json
 import requests
-
 from pathlib import Path
+from tqdm import tqdm
 
 BASE_URL = "https://sirekap-obj-data.kpu.go.id/"
 PPWP_WILAYAH = "wilayah/pemilu/ppwp"
@@ -13,7 +13,7 @@ PDPD_RECAP = "pemilu/hhcw/pdpd"
 PDPRDK_RECAP = "pemilu/hhcd/pdprdk"  # min tingkat = 2
 
 def download_data(url):
-    print(f"downloading: {url}")
+    # print(f"downloading: {url}")
     response = requests.get(url)
     content = response.content
     content_json = json.loads(content)
@@ -65,36 +65,36 @@ if __name__=='__main__':
     download_data("https://sirekap-obj-data.kpu.go.id/pemilu/ppwp.json")
 
     ## Download wilayah and all wilayah data
-    url_wilayah_root = "https://sirekap-obj-data.kpu.go.id/wilayah/pemilu/ppwp/0.json"
-    download_data("https://sirekap-obj-data.kpu.go.id/pemilu/hhcw/ppwp.json")
-    ppwp_wilayah_root = download_data(url_wilayah_root)
-    for wilayah in ppwp_wilayah_root:
-        download_wilayah(
-            wilayah,
-            url_wilayah_root,
-            wilayah_url=PPWP_WILAYAH,
-            rekap_url=PPWP_RECAP
-        )
-    download_data("https://sirekap-obj-data.kpu.go.id/wilayah/pemilu/ppwp/11/1105/110507/1105072002/1105072002001.json")
+    # url_wilayah_root = "https://sirekap-obj-data.kpu.go.id/wilayah/pemilu/ppwp/0.json"
+    # download_data("https://sirekap-obj-data.kpu.go.id/pemilu/hhcw/ppwp.json")
+    # ppwp_wilayah_root = download_data(url_wilayah_root)
+    # for wilayah in tqdm(ppwp_wilayah_root):
+    #     download_wilayah(
+    #         wilayah,
+    #         url_wilayah_root,
+    #         wilayah_url=PPWP_WILAYAH,
+    #         rekap_url=PPWP_RECAP
+    #     )
+    # download_data("https://sirekap-obj-data.kpu.go.id/wilayah/pemilu/ppwp/11/1105/110507/1105072002/1105072002001.json")
         
-    # DPR
-    ## Download partai
-    download_data("https://sirekap-obj-data.kpu.go.id/pemilu/partai.json")
-    ## Download recap national
-    download_data("https://sirekap-obj-data.kpu.go.id/pemilu/hhcd/pdpr/0.json")
-    url_dapil_root = "https://sirekap-obj-data.kpu.go.id/wilayah/pemilu/pdpr/dapil_dpr.json"
-    pdpr_dapil_root = download_data(url_dapil_root)
-    for dapil in pdpr_dapil_root:
-        dapil_code = dapil["kode"]
-        # recap
-        download_data(f"https://sirekap-obj-data.kpu.go.id/pemilu/hhcd/pdpr/{dapil_code}.json")
-        # caleg
-        download_data(f"https://sirekap-obj-data.kpu.go.id/pemilu/caleg/partai/{dapil_code}.json")
+    # # DPR
+    # ## Download partai
+    # download_data("https://sirekap-obj-data.kpu.go.id/pemilu/partai.json")
+    # ## Download recap national
+    # download_data("https://sirekap-obj-data.kpu.go.id/pemilu/hhcd/pdpr/0.json")
+    # url_dapil_root = "https://sirekap-obj-data.kpu.go.id/wilayah/pemilu/pdpr/dapil_dpr.json"
+    # pdpr_dapil_root = download_data(url_dapil_root)
+    # for dapil in tqdm(pdpr_dapil_root):
+    #     dapil_code = dapil["kode"]
+    #     # recap
+    #     download_data(f"https://sirekap-obj-data.kpu.go.id/pemilu/hhcd/pdpr/{dapil_code}.json")
+    #     # caleg
+    #     download_data(f"https://sirekap-obj-data.kpu.go.id/pemilu/caleg/partai/{dapil_code}.json")
 
     # DPRD Prov & Kab
     url_dapil_root = "https://sirekap-obj-data.kpu.go.id/wilayah/pemilu/pdprdp/0.json"
     pdprd_dapil_root = download_data(url_dapil_root)
-    for wilayah in pdprd_dapil_root:
+    for wilayah in tqdm(pdprd_dapil_root):
         # Prv
         kode_wilayah = wilayah["kode"]
         dapil_list = download_data(f"https://sirekap-obj-data.kpu.go.id/wilayah/pemilu/pdprdp/{kode_wilayah}.json")
